@@ -9,7 +9,8 @@ A DeepSeek Harness plugin bundle (`@local/opencode-usage`, row id `opencode-usag
 renders live `opencode stats` data as a Settings page in the Harness Web UI. Two halves:
 
 - `index.js` — Host: authenticated route `GET /api/opencode.usage`, CLI invocation, cache.
-- `client.js` — Browser: `settings.section` page, locale dictionaries, styles.
+- `client.js` — Browser: `settings.section` page (stat tiles, token breakdown, per-model table,
+  tool reliability), locale dictionaries, styles.
 
 ## Invariants
 

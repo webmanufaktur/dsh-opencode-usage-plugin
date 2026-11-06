@@ -6,12 +6,15 @@ estimated cost, and per-tool reliability, read on demand from the local `opencod
 
 ![The opencode usage settings page](docs/preview.png)
 
+![Per-model usage table](docs/models.png)
+
 ## What you get
 
 - **Settings → opencode usage** page with range chips (7 / 30 / 90 days, all time), four stat
-  tiles, a token breakdown bar, and a top-8 tool-reliability table.
-- **Live data** from `opencode stats --json`; each range is cached for 30 seconds, and the
-  Refresh button forces a fresh read.
+  tiles, a token breakdown bar, a per-model usage table, and a tool-reliability table.
+- **Live data** from `opencode stats --json --models`: sessions, tokens, cost, and usage per
+  provider/model. Each range is cached for 30 seconds, and the Refresh button forces a fresh
+  read.
 - **No extra service and no secrets**: the Harness Host runs the CLI locally; the page fetches
   one authenticated JSON endpoint.
 - English and German page copy, host theme tokens (light and dark), and an original icon.
@@ -48,9 +51,10 @@ Registers one authenticated exact-Fetch route through `ctx.connection.fetch`:
 GET /api/opencode.usage?range=7|30|90|all[&fresh=1]
 ```
 
-- Runs `opencode stats --json` (`--days <n>` or `--all`) and projects the payload into small
-  display values: sessions, subagents, prompts, steps, token totals, cost, tool calls and the
-  top 8 tools by call count.
+- Runs `opencode stats --json --models` (`--days <n>` or `--all`) and projects the payload into
+  small display values: sessions, subagents, prompts, steps, token totals, cost, per-model rows
+  (provider, model, variant, steps, tokens, cost), tool calls and the top 8 tools by call count.
+- Sorts the model rows by steps and keeps the top 10; `modelCount` carries the full count.
 - Caches each range for 30 seconds; `fresh=1` bypasses the cache (used by Refresh).
 - Returns `{ ok: false, error }` with status 400 for an unknown range and 502 when the CLI
   fails or is missing.

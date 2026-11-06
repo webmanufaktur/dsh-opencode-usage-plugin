@@ -22,6 +22,7 @@ const CACHE_MS = 30_000
 const TIMEOUT_MS = 30_000
 const MAX_BUFFER = 16 * 1024 * 1024
 const TOOL_ROWS = 8
+const MODEL_ROWS = 10
 
 /** Accepted `range` query values: a day count, or `all` for lifetime. */
 const RANGES = { 7: 7, 30: 30, 90: 90, all: 0 }
@@ -105,6 +106,34 @@ function project(rangeKey, raw) {
     }))
     .sort((left, right) => right.calls - left.calls)
     .slice(0, TOOL_ROWS)
+  const rawModels = Array.isArray(raw.models) ? raw.models : []
+  const models = rawModels
+    .filter((row) => row !== null && typeof row === 'object')
+    .map((row) => {
+      const model = row.model ?? {}
+      const modelTokens = row.tokens ?? {}
+      const modelCache = modelTokens.cache ?? {}
+      const modelIn = count(modelTokens.input)
+      const modelOut = count(modelTokens.output)
+      const modelReasoning = count(modelTokens.reasoning)
+      const modelCacheRead = count(modelCache.read)
+      return {
+        provider: String(model.providerID ?? ''),
+        id: String(model.id ?? '?'),
+        variant: typeof model.variant === 'string' ? model.variant : '',
+        steps: count(row.steps),
+        tokens: {
+          input: modelIn,
+          output: modelOut,
+          reasoning: modelReasoning,
+          cacheRead: modelCacheRead,
+          total: modelIn + modelOut + modelReasoning + modelCacheRead,
+        },
+        cost: count(row.cost),
+      }
+    })
+    .sort((left, right) => right.steps - left.steps)
+    .slice(0, MODEL_ROWS)
   return {
     ok: true,
     range: rangeKey,
@@ -130,6 +159,8 @@ function project(rangeKey, raw) {
       failed: count(tools.totals?.failed),
       rows,
     },
+    models,
+    modelCount: rawModels.length,
     fetchedAt: Date.now(),
   }
 }
@@ -141,7 +172,9 @@ async function load(rangeKey, fresh) {
   const pending = inflight.get(rangeKey)
   if (pending !== undefined) return pending
   const days = RANGES[rangeKey]
-  const args = days === 0 ? ['stats', '--json', '--all'] : ['stats', '--json', '--days', String(days)]
+  const args = days === 0
+    ? ['stats', '--json', '--models', '--all']
+    : ['stats', '--json', '--models', '--days', String(days)]
   const task = (async () => {
     const raw = await runStats(args)
     const value = project(rangeKey, raw)

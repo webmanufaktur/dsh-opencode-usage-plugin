@@ -24,6 +24,7 @@ window.__ModuleLoader__.load({
       sessions: 'Sessions',
       prompts: 'Prompts',
       steps: 'Steps',
+      stepsLower: 'steps',
       subagents: 'Subagents',
       tokens: 'Tokens',
       cost: 'Est. cost',
@@ -42,6 +43,13 @@ window.__ModuleLoader__.load({
       failedLower: 'failed',
       p50: 'p50',
       noTools: 'No tool calls recorded for this range.',
+      models: 'Models',
+      modelsLower: 'models',
+      oneModel: 'model',
+      model: 'Model',
+      modelCost: 'Cost',
+      moreModels: '+{count} more',
+      noModels: 'No model activity recorded for this range.',
       empty: 'No opencode usage recorded for this range.',
       updated: 'Updated {time} · {source}',
       rangeDays: 'Last {days} days',
@@ -65,6 +73,7 @@ window.__ModuleLoader__.load({
       sessions: 'Sitzungen',
       prompts: 'Prompts',
       steps: 'Schritte',
+      stepsLower: 'Schritte',
       subagents: 'Subagenten',
       tokens: 'Tokens',
       cost: 'Gesch. Kosten',
@@ -83,6 +92,13 @@ window.__ModuleLoader__.load({
       failedLower: 'fehlgeschlagen',
       p50: 'p50',
       noTools: 'Keine Tool-Aufrufe in diesem Zeitraum.',
+      models: 'Modelle',
+      modelsLower: 'Modelle',
+      oneModel: 'Modell',
+      model: 'Modell',
+      modelCost: 'Kosten',
+      moreModels: '+{count} weitere',
+      noModels: 'Keine Modell-Aktivität in diesem Zeitraum.',
       empty: 'Keine opencode-Nutzung in diesem Zeitraum.',
       updated: 'Aktualisiert {time} · {source}',
       rangeDays: 'Letzte {days} Tage',
@@ -123,6 +139,9 @@ window.__ModuleLoader__.load({
 .ocu-table td{padding:6px 0;border-top:.5px solid var(--dsw-alias-border-l2);font-variant-numeric:tabular-nums}
 .ocu-table th:not(:first-child),.ocu-table td:not(:first-child){text-align:right}
 .ocu-tool{font-family:var(--ds-font-family-code,ui-monospace,monospace);font-size:12px}
+.ocu-modelCell{display:flex;flex-direction:column;gap:1px}
+.ocu-modelName{font-family:var(--ds-font-family-code,ui-monospace,monospace);font-size:12px}
+.ocu-modelMeta{font-size:11px;line-height:16px;color:var(--dsw-alias-label-tertiary)}
 .ocu-ok{color:var(--dsw-alias-state-success-primary)}
 .ocu-bad{color:var(--dsw-alias-state-error-primary)}
 .ocu-foot{margin:0;font-size:12px;line-height:18px;color:var(--dsw-alias-label-tertiary)}
@@ -210,6 +229,40 @@ window.__ModuleLoader__.load({
           h('span', { className: 'ocu-dot', style: { background: part.color } }),
           `${t(part.key)} ${compact(part.value)}`,
         ))),
+      )
+    }
+
+    function ModelsCard(props) {
+      const { t, data } = props
+      const models = Array.isArray(data.models) ? data.models : []
+      if (models.length === 0) return null
+      const steps = models.reduce((sum, row) => sum + row.steps, 0)
+      const countLabel = data.modelCount === 1 ? t('oneModel') : t('modelsLower')
+      return h('div', { className: 'ocu-card' },
+        h('div', { className: 'ocu-cardHead' },
+          h('span', { className: 'ocu-cardTitle' }, t('models')),
+          h('span', { className: 'ocu-muted' }, `${integer.format(steps)} ${t('stepsLower')} · ${integer.format(data.modelCount)} ${countLabel}`),
+        ),
+        h('table', { className: 'ocu-table' },
+          h('thead', null, h('tr', null,
+            h('th', null, t('model')),
+            h('th', null, t('steps')),
+            h('th', null, t('tokens')),
+            h('th', null, t('modelCost')),
+          )),
+          h('tbody', null, models.map((row) => h('tr', { key: `${row.provider}/${row.id}/${row.variant}` },
+            h('td', null, h('div', { className: 'ocu-modelCell' },
+              h('span', { className: 'ocu-modelName' }, row.id),
+              h('span', { className: 'ocu-modelMeta' }, [row.provider, row.variant].filter(Boolean).join(' · ')),
+            )),
+            h('td', null, integer.format(row.steps)),
+            h('td', null, compact(row.tokens.total)),
+            h('td', { className: 'ocu-muted' }, money(row.cost)),
+          ))),
+        ),
+        data.modelCount > models.length
+          ? h('p', { className: 'ocu-muted' }, t('moreModels', { count: data.modelCount - models.length }))
+          : null,
       )
     }
 
@@ -311,6 +364,7 @@ window.__ModuleLoader__.load({
                         h(Tile, { label: t('cost'), value: money(data.cost), meta: t('costEstimate') }),
                       ),
                       h(TokenCard, { t, data }),
+                      h(ModelsCard, { t, data }),
                       h(ToolsCard, { t, data }),
                     ),
                 h('p', { className: 'ocu-foot' },
