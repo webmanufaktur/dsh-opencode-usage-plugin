@@ -19,6 +19,11 @@ estimated cost, and per-tool reliability, read on demand from the local `opencod
   one authenticated JSON endpoint.
 - English and German page copy, host theme tokens (light and dark), and an original icon.
 
+## Scope
+
+This page reports **opencode's own usage only**. Command Code billing or quota data is
+deliberately out of scope.
+
 ## Requirements
 
 - DeepSeek Harness 0.2.x with the Web UI (desktop app or `dsh web`).

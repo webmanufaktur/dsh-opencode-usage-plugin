@@ -23,8 +23,10 @@ renders live `opencode stats` data as a Settings page in the Harness Web UI. Two
   document-relative app routes. Do not switch to absolute origins.
 - **No iframes, no `document.body` writes.** Render React inside the slot and scope all styles
   under the `.ocu-` prefix using `--dsw-alias-*` tokens.
-- **Data comes from the CLI only.** Run `opencode stats --json`; never read opencode's SQLite
-  state or scrape its UI.
+- **Data comes from the CLI only.** Run `opencode stats --json --models`; never read opencode's
+  SQLite state or scrape its UI.
+- **Scope is opencode only.** No Command Code quota, billing, or per-model data — the user
+  scoped this plugin to opencode's own usage (2026-11-06).
 - **Return curated values, not raw CLI output.** Keep the response shape small and stable;
   failures carry an explicit `{ ok: false, error }`.
 
