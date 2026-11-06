@@ -1,0 +1,5 @@
+# opencode-usage bundle layer: one Host row serving the usage snapshot and
+# one Client module rendering the Settings page.
+- insert:
+    - id: opencode-usage
+      name: '@local/opencode-usage'
