@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "opencode usage",
+    "title": "OpenCode Usage",
     "description": "Live session, token, and cost statistics from the opencode CLI on this machine, shown as a Settings page."
   },
-  "nav": "opencode usage"
+  "nav": "OpenCode usage"
 }

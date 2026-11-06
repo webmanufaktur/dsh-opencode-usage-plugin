@@ -1,16 +1,16 @@
-# opencode usage (PNC)
+# OpenCode Usage (OCU)
 
 A [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugin bundle that shows
 live [opencode](https://opencode.ai) usage in the Harness Web UI: sessions, prompts, tokens,
 estimated cost, and per-tool reliability, read on demand from the local `opencode` CLI.
 
-![The opencode usage settings page](docs/preview.png)
+![The OpenCode Usage settings page](docs/preview.png)
 
 ![Per-model usage table](docs/models.png)
 
 ## What you get
 
-- **Settings → opencode usage** page with range chips (7 / 30 / 90 days, all time), four stat
+- **Settings → OpenCode usage** page with range chips (7 / 30 / 90 days, all time), four stat
   tiles, a token breakdown bar, a per-model usage table, and a tool-reliability table.
 - **Live data** from `opencode stats --json --models`: sessions, tokens, cost, and usage per
   provider/model. Each range is cached for 30 seconds, and the Refresh button forces a fresh
@@ -43,7 +43,7 @@ Install the checkout as a profile bundle: in the Harness, ask the agent to *inst
 at `/absolute/path/dsh-opencode-usage-plugin`* — `plugin_manager install_bundle` links the
 directory and enables it. The row id is `opencode-usage`.
 
-Then open **Settings → opencode usage**. Because the package is link-installed, edits in the
+Then open **Settings → OpenCode usage**. Because the package is link-installed, edits in the
 checkout apply without reinstalling; restart the Harness to reload the Host half.
 
 ## How it works
@@ -68,7 +68,7 @@ The route lives inside the browser-authentication fence, so only the owner's pag
 
 ### Client half — `client.js`
 
-Registers a `settings.section` entry ("opencode usage") and renders the page with host theme
+Registers a `settings.section` entry ("OpenCode usage") and renders the page with host theme
 tokens. It fetches the route document-relative (`api/opencode.usage`), so the existing browser
 cookie authenticates the request. Copy comes from locale dictionaries in English and German.
 

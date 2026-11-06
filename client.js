@@ -9,8 +9,8 @@ window.__ModuleLoader__.load({
     const RANGES = ['7', '30', '90', 'all']
 
     const EN = {
-      nav: 'opencode usage',
-      title: 'opencode usage',
+      nav: 'OpenCode usage',
+      title: 'OpenCode Usage',
       intro: 'Sessions, tokens, and cost from the opencode CLI running on this machine.',
       range7: '7 days',
       range30: '30 days',
@@ -58,8 +58,8 @@ window.__ModuleLoader__.load({
     }
 
     const DE = {
-      nav: 'opencode-Nutzung',
-      title: 'opencode-Nutzung',
+      nav: 'OpenCode usage',
+      title: 'OpenCode Usage',
       intro: 'Sitzungen, Tokens und Kosten aus der opencode-CLI auf diesem Rechner.',
       range7: '7 Tage',
       range30: '30 Tage',
